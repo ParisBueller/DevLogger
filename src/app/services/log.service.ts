@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs';
 
 import { Log } from '../models/log';
+import { currentId } from 'async_hooks';
 @Injectable({
   providedIn: 'root'
 })
@@ -28,5 +29,18 @@ export class LogService {
 
   setFormLog(log: Log) {
     this.logSource.next(log);
+  }
+
+  addLog(log: Log) {
+    this.logs.unshift(log);
+  }
+
+  updateLog(log: Log) {
+    this.logs.forEach((cur, index) => {
+      if(log.id === cur.id) {
+        this.logs.splice(index, 1);
+      }
+    });
+    this.logs.unshift(log);
   }
 }
