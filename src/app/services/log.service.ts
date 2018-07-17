@@ -5,22 +5,28 @@ import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs';
 
 import { Log } from '../models/log';
-import { currentId } from 'async_hooks';
+
 @Injectable({
   providedIn: 'root'
 })
 export class LogService {
   logs: Log[];
+  
 
   private logSource = new BehaviorSubject<Log>({id:null, text: null, date: null});
   selectedLog = this.logSource.asObservable();
 
+  private stateSource = new BehaviorSubject<boolean>(true);
+  stateClear = this.stateSource.asObservable();
+
   constructor() { 
-    this.logs = [
-      {id: '1', text: 'Generated components', date: new Date('7/6/2018 10:30:07')},
-      {id: '2', text: 'Added Bootstrap', date: new Date('7/6/2018 10:31:09')},
-      {id: '3', text: 'Added another thing', date: new Date('7/6/2018 10:35:07')},
-    ]
+    // this.logs = [
+    //   {id: '1', text: 'Generated components', date: new Date('7/6/2018 10:30:07')},
+    //   {id: '2', text: 'Added Bootstrap', date: new Date('7/6/2018 10:31:09')},
+    //   {id: '3', text: 'Added another thing', date: new Date('7/6/2018 10:35:07')},
+    // ]
+
+    this.logs = [];
   }
 
   getLogs(): Observable<Log[]> {
@@ -42,5 +48,17 @@ export class LogService {
       }
     });
     this.logs.unshift(log);
+  }
+
+  deleteLog(log: Log) {
+    this.logs.forEach((cur, index) => {
+      if(log.id === cur.id) {
+        this.logs.splice(index, 1);
+      }
+    });
+  }
+
+  clearState() {
+    this.stateSource.next(true);
   }
 }
